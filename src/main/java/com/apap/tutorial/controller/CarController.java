@@ -1,6 +1,7 @@
 package com.apap.tutorial.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.apap.tutorial.model.*;
 import com.apap.tutorial.rest.*;
@@ -28,22 +29,36 @@ public class CarController {
 	@Autowired
 	private CarService carService;
 	
+	@Autowired
+	private DealerService dealerService;
+
 	@PutMapping(value = "/{carId}")
 	private String updateCar(
 			@PathVariable (value = "carId") long id,
-			@RequestParam("brand") String brand,
-			@RequestParam("type") String type,
-			@RequestParam("price") Integer price,
-			@RequestParam("amount") Integer amount,
-			@RequestParam("dealerId") Long dealerId) {
+			@RequestParam("brand") Optional<String> brand,
+			@RequestParam("type") Optional<String> type,
+			@RequestParam("price") Optional<Integer> price,
+			@RequestParam("amount") Optional<Integer> amount,
+			@RequestParam("dealerId") Optional<Long> dealerId) {
 		CarModel car = carService.getCarDetailById(id).get();
 		if (car.equals(null)) {
 			return "Couldn't find your dealer";
 		}
-		car.setBrand(brand);
-		car.setType(type);
-		car.setPrice(price);
-		car.setAmount(amount);
+		if(brand.isPresent()) {
+			car.setBrand(brand.get());			
+		}
+		if(type.isPresent()) {
+			car.setType(type.get());			
+		}
+		if(price.isPresent()) {
+			car.setPrice(price.get());			
+		}
+		if(amount.isPresent()) {
+			car.setAmount(amount.get());			
+		}
+		DealerModel dealerTemp = dealerService.getDealerDetailById(id).get();
+		car.setDealer(dealerTemp);
+		
 		carService.updateCar(id, car);
 		return "car update success";
 	}

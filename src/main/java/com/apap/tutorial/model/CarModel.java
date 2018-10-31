@@ -5,6 +5,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -36,7 +37,6 @@ public class CarModel implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "dealer_id", referencedColumnName = "id", nullable = false)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
-	@JsonIgnore
 	private DealerModel dealer;
 
 	public long getId() {
@@ -82,7 +82,8 @@ public class CarModel implements Serializable {
 	public DealerModel getDealer() {
 		return dealer;
 	}
-
+	
+	@JsonProperty
 	public void setDealer(DealerModel dealer) {
 		this.dealer = dealer;
 	}
